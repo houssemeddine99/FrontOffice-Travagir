@@ -3,6 +3,7 @@ package frontoffice.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import frontoffice.models.UserDocument;
+import frontoffice.utils.SessionManager;
 
 import java.net.http.HttpResponse;
 import java.util.concurrent.CompletableFuture;
@@ -18,6 +19,12 @@ public class UserDocumentService {
 
     public CompletableFuture<HttpResponse<String>> save(UserDocument doc) {
         try {
+            // Auto-populate userId from current session
+            var currentUser = SessionManager.getInstance().getCurrentUser();
+            if (currentUser != null) {
+                doc.setUserId(currentUser.id());
+            }
+            
             String body = mapper.writeValueAsString(doc);
             return apiClient.sendWithRetry("/api/v1/user-documents/save", "POST", body);
         } catch (Exception e) {
