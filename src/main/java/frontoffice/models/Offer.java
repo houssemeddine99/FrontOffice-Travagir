@@ -1,7 +1,9 @@
 package frontoffice.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDate;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Offer {
     private int id;
     private int voyageId;

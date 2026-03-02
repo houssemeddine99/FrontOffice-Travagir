@@ -28,7 +28,9 @@ public class AssociationService {
             try {
                 return mapper.readValue(response.body(), new TypeReference<>() {
                 });
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                System.err.println("AssociationService: failed to parse list response: " + response.body());
+                e.printStackTrace();
             }
         }
         return List.of();
@@ -38,7 +40,9 @@ public class AssociationService {
         if (response.statusCode() >= 200 && response.statusCode() < 300) {
             try {
                 return mapper.readValue(response.body(), Association.class);
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                System.err.println("AssociationService: failed to parse object response: " + response.body());
+                e.printStackTrace();
             }
         }
         return null;

@@ -32,7 +32,9 @@ public class ReclamationService {
             try {
                 return mapper.readValue(response.body(), new TypeReference<>() {
                 });
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                System.err.println("ReclamationService: failed to parse response body: " + response.body());
+                e.printStackTrace();
             }
         }
         return List.of();

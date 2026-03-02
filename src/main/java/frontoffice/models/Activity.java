@@ -1,5 +1,8 @@
 package frontoffice.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Activity {
     private int id;
     private int voyageId;

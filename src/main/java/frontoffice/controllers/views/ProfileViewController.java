@@ -6,21 +6,28 @@ import frontoffice.utils.HttpErrorParser;
 import frontoffice.utils.SessionManager;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ProfileViewController {
     @FXML
-    private TextField nameField;
+    private Label nameLabel;
     @FXML
-    private TextField emailField;
+    private Label emailLabel;
     @FXML
-    private TextField phoneField;
+    private Label phoneLabel;
     @FXML
-    private TextField imageUrlField;
+    private ImageView imageView;
+    private String currentImageUrl;
     @FXML
     private Label statusLabel;
 
@@ -36,8 +43,22 @@ public class ProfileViewController {
         statusLabel.setText("Loading...");
         userProfileService.getMe()
                 .thenAccept(profile -> Platform.runLater(() -> {
-                    setFields(profile);
-                    statusLabel.setText(profile == null ? "Failed to load profile." : "");
+                    if (profile != null) {
+                        setFields(profile);
+                        statusLabel.setText("");
+                    } else {
+                        var sessionUser = SessionManager.getInstance().getCurrentUser();
+                        if (sessionUser != null) {
+                            UserProfile u = new UserProfile();
+                            u.setId(sessionUser.id());
+                            u.setName(sessionUser.name());
+                            u.setEmail(sessionUser.email());
+                            setFields(u);
+                            statusLabel.setText("");
+                        } else {
+                            statusLabel.setText("Failed to load profile.");
+                        }
+                    }
                 }))
                 .exceptionally(ex -> {
                     Platform.runLater(() -> statusLabel.setText("Load error: " + ex.getMessage()));
@@ -54,10 +75,10 @@ public class ProfileViewController {
         }
 
         Map<String, Object> update = new HashMap<>();
-        update.put("name", trim(nameField.getText()));
-        update.put("email", trim(emailField.getText()));
-        update.put("tel", trim(phoneField.getText()));
-        update.put("imageUrl", trim(imageUrlField.getText()));
+        update.put("name", trim(nameLabel.getText()));
+        update.put("email", trim(emailLabel.getText()));
+        update.put("tel", trim(phoneLabel.getText()));
+        update.put("imageUrl", trim(currentImageUrl));
 
         statusLabel.setText("Saving...");
         userProfileService.updateProfile(user.id(), update)
@@ -76,19 +97,71 @@ public class ProfileViewController {
                 });
     }
 
+    @FXML
+    private void onEdit() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/frontoffice/views/profileEditDialog.fxml"));
+            Parent root = loader.load();
+            frontoffice.controllers.views.ProfileEditController ctrl = loader.getController();
+            // prepare current profile
+            UserProfile current = new UserProfile();
+            current.setName(nameLabel.getText());
+            current.setEmail(emailLabel.getText());
+            current.setTel(phoneLabel.getText());
+            current.setImageUrl(currentImageUrl);
+            ctrl.setProfile(current);
+
+            Stage dialog = new Stage();
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.setTitle("Edit Profile");
+            dialog.setScene(new Scene(root));
+            dialog.showAndWait();
+
+            if (ctrl.isSaved()) {
+                onRefresh();
+            }
+        } catch (Exception e) {
+            statusLabel.setText("Could not open edit dialog: " + e.getMessage());
+        }
+    }
+
     private void setFields(UserProfile profile) {
         if (profile == null) {
-            nameField.setText("");
-            emailField.setText("");
-            phoneField.setText("");
-            imageUrlField.setText("");
+            nameLabel.setText("");
+            emailLabel.setText("");
+            phoneLabel.setText("");
+            imageView.setImage(null);
+            currentImageUrl = null;
             return;
         }
 
-        nameField.setText(profile.getName() == null ? "" : profile.getName());
-        emailField.setText(profile.getEmail() == null ? "" : profile.getEmail());
-        phoneField.setText(profile.getTel() == null ? "" : profile.getTel());
-        imageUrlField.setText(profile.getImageUrl() == null ? "" : profile.getImageUrl());
+        nameLabel.setText(profile.getName() == null ? "" : profile.getName());
+        emailLabel.setText(profile.getEmail() == null ? "" : profile.getEmail());
+        phoneLabel.setText(profile.getTel() == null ? "" : profile.getTel());
+        currentImageUrl = profile.getImageUrl();
+        if (currentImageUrl == null || currentImageUrl.isBlank()) {
+            imageView.setImage(null);
+            statusLabel.setText("");
+        } else {
+            try {
+                statusLabel.setText("Loading image...");
+                Image img = new Image(currentImageUrl, true);
+                img.progressProperty().addListener((obs, oldV, newV) -> {
+                    if (newV != null && newV.doubleValue() >= 1.0) {
+                        Platform.runLater(() -> statusLabel.setText(""));
+                    }
+                });
+                imageView.imageProperty().addListener((obs, oldImg, newImg) -> {
+                    if (newImg != null && newImg.isError()) {
+                        Platform.runLater(() -> statusLabel.setText("Image load failed."));
+                    }
+                });
+                imageView.setImage(img);
+            } catch (Exception e) {
+                imageView.setImage(null);
+                statusLabel.setText("Image load error: " + e.getMessage());
+            }
+        }
     }
 
     private String trim(String s) {

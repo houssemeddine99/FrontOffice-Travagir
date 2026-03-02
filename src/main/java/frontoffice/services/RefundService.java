@@ -36,7 +36,9 @@ public class RefundService {
             try {
                 return mapper.readValue(response.body(), new TypeReference<>() {
                 });
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                System.err.println("RefundService: failed to parse response body: " + response.body());
+                e.printStackTrace();
             }
         }
         return List.of();

@@ -1,0 +1,10 @@
+/* Global theme variables for FrontOffice - loaded as the first stylesheet */
+.root {
+    -fx-navy-dark: #1e293b;
+    -fx-gold-main: #F9B729;
+    -fx-gold-light: #FFD166;
+    -fx-text-muted: #64748b;
+    -fx-light-bg: #F8F9FA;
+    -fx-border-gray: #E0E0E0;
+    -fx-font-family: "Segoe UI Emoji", "Segoe UI Symbol", "Helvetica", "Arial", "sans-serif";
+}

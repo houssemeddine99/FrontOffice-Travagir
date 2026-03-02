@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.geometry.Insets?>
 
 <VBox spacing="20" alignment="TOP_CENTER" prefWidth="900" prefHeight="650"
@@ -25,23 +26,22 @@
             <ColumnConstraints prefWidth="120" />
             <ColumnConstraints hgrow="ALWAYS" />
         </columnConstraints>
-
         <Label text="Name" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="field-label"/>
-        <TextField fx:id="nameField" GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="form-field"/>
+        <Label fx:id="nameLabel" text="-" GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="form-field"/>
 
         <Label text="Email" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="field-label"/>
-        <TextField fx:id="emailField" GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="form-field"/>
+        <Label fx:id="emailLabel" text="-" GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="form-field"/>
 
         <Label text="Phone" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="field-label"/>
-        <TextField fx:id="phoneField" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="form-field"/>
+        <Label fx:id="phoneLabel" text="-" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="form-field"/>
 
-        <Label text="Image URL" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="field-label"/>
-        <TextField fx:id="imageUrlField" GridPane.rowIndex="3" GridPane.columnIndex="1" styleClass="form-field"/>
+        <Label text="Image" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="field-label"/>
+        <ImageView fx:id="imageView" GridPane.rowIndex="3" GridPane.columnIndex="1" fitHeight="96" fitWidth="160" preserveRatio="true" />
     </GridPane>
 
     <HBox spacing="15" alignment="CENTER_RIGHT">
         <Button text="Refresh" onAction="#onRefresh" styleClass="btn-cancel" />
-        <Button text="Save" onAction="#onSave" styleClass="btn-save" />
+        <Button text="Update" onAction="#onEdit" styleClass="btn-save" />
     </HBox>
 
     <Label fx:id="statusLabel" text="" />
