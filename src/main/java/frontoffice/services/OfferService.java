@@ -16,13 +16,8 @@ public class OfferService {
     private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     public CompletableFuture<List<Offer>> getAllOffers() {
-        System.out.println("🔍 DEBUG: OfferService.getAllOffers() called");
         return apiClient.sendWithRetry("/api/v1/offers", "GET", null)
-                .thenApply(response -> {
-                    System.out.println("🔍 DEBUG: API response status: " + response.statusCode());
-                    System.out.println("🔍 DEBUG: API response body: " + response.body());
-                    return parseList(response);
-                });
+                .thenApply(this::parseList);
     }
 
     public CompletableFuture<List<Offer>> searchOffers(String title) {
@@ -32,22 +27,15 @@ public class OfferService {
     }
 
     private List<Offer> parseList(HttpResponse<String> response) {
-        System.out.println("🔍 DEBUG: parseList called with status: " + response.statusCode());
         if (response.statusCode() >= 200 && response.statusCode() < 300) {
             try {
-                System.out.println("🔍 DEBUG: Attempting to parse JSON: " + response.body());
-                List<Offer> offers = mapper.readValue(response.body(), new TypeReference<>() {
+                return mapper.readValue(response.body(), new TypeReference<>() {
                 });
-                System.out.println("🔍 DEBUG: Successfully parsed " + offers.size() + " offers");
-                return offers;
             } catch (Exception e) {
-                System.out.println("🔍 DEBUG: JSON parsing error: " + e.getMessage());
+                System.err.println("OfferService: failed to parse response body: " + response.body());
                 e.printStackTrace();
             }
-        } else {
-            System.out.println("🔍 DEBUG: API returned error status: " + response.statusCode());
         }
-        System.out.println("🔍 DEBUG: Returning empty list");
         return List.of();
     }
 }

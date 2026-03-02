@@ -1,8 +1,10 @@
 package frontoffice.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDocument {
     private int id;
     private int userId;

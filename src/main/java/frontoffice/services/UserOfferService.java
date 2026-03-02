@@ -37,7 +37,9 @@ public class UserOfferService {
             try {
                 return mapper.readValue(response.body(), new TypeReference<>() {
                 });
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                System.err.println("UserOfferService: failed to parse response body: " + response.body());
+                e.printStackTrace();
             }
         }
         return List.of();

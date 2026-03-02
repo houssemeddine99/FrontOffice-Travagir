@@ -38,6 +38,8 @@ public class SceneNavigator {
             FXMLLoader loader = new FXMLLoader(SceneNavigator.class.getResource(fxmlPath));
             Parent root = loader.load();
             Scene scene = new Scene(root, width, height);
+            // Load global theme first so other stylesheets can reference lookups
+            scene.getStylesheets().add(SceneNavigator.class.getResource("/frontoffice/css/theme.css").toExternalForm());
             stage.setScene(scene);
         } catch (Exception e) {
             e.printStackTrace();

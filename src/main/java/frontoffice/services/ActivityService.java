@@ -23,7 +23,9 @@ public class ActivityService {
             try {
                 return mapper.readValue(response.body(), new TypeReference<>() {
                 });
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                System.err.println("ActivityService: failed to parse response body: " + response.body());
+                e.printStackTrace();
             }
         }
         return List.of();

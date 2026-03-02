@@ -5,7 +5,7 @@
 <?import javafx.geometry.Insets?>
 
 <VBox prefHeight="768" prefWidth="1376.0"
-      xmlns="http://javafx.com/javafx/21"
+    xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
       stylesheets="@../css/voyageView.css"
       fx:controller="frontoffice.controllers.views.ReservationsViewController"

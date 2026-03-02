@@ -1,7 +1,9 @@
 package frontoffice.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDate;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Offer {
     private int id;
     private int voyageId;
@@ -11,7 +13,6 @@ public class Offer {
     private LocalDate startDate;
     private LocalDate endDate;
     private boolean active;
-    private String destinationName;
 
     public int getId() {
         return id;
@@ -75,14 +76,6 @@ public class Offer {
 
     public void setActive(boolean active) {
         this.active = active;
-    }
-
-    public String getDestinationName() {
-        return destinationName;
-    }
-
-    public void setDestinationName(String destinationName) {
-        this.destinationName = destinationName;
     }
 
     public double getDiscountPercentageValue() {

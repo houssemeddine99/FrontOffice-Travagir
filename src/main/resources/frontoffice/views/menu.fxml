@@ -5,7 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.Region?>
 
-<VBox xmlns="http://javafx.com/javafx/21"
+<VBox xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
       spacing="15"
       prefWidth="250"
